@@ -8,10 +8,10 @@
     "dev": "tsc && node dist/index.js",
     "dev:watch": "tsc --watch",
     "test": "jest",
-    "db:generate": "drizzle-kit generate:pg",
     "db:push": "drizzle-kit push",
-    "db:migrate": "drizzle-kit migrate",
     "db:setup": "drizzle-kit generate:pg && drizzle-kit push",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:migrate": "tsx src/db/migrate.ts",
     "db:studio": "drizzle-kit studio"
   },
   "keywords": [],

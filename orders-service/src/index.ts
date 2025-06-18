@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import { ServiceBusClient } from "@azure/service-bus";
-import { setupServiceBus } from "./services/serviceBus";
+import { setupServiceBus, closeServiceBus } from "./services/serviceBus";
 import { db, client } from "./db";
 import { errorHandler } from "./middleware/errorHandler";
 import { orderRoutes } from "./routes/orders";
@@ -61,7 +61,14 @@ async function startServer() {
 process.on("SIGINT", async () => {
   console.log("Shutting down gracefully...");
   await client.end();
-  await serviceBusClient.close();
+  await closeServiceBus();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  console.log("Received SIGTERM, shutting down gracefully...");
+  await client.end();
+  await closeServiceBus();
   process.exit(0);
 });
 
