@@ -1,0 +1,12 @@
+# gitignore
+
+orders-service/node_modules
+orders-service/dist
+orders-service/.env
+
+
+products-service/node_modules
+products-service/dist
+products-service/.env
+
+.env

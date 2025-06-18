@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # PostgreSQL for Products Service
+  products-db:
+    image: postgres:15-alpine
+    container_name: products-db
+    environment:
+      POSTGRES_DB: products_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - products_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  # PostgreSQL for Orders Service
+  orders-db:
+    image: postgres:15-alpine
+    container_name: orders-db
+    environment:
+      POSTGRES_DB: orders_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - orders_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  # Products Service
+  products-service:
+    build:
+      context: ./products-service
+      dockerfile: Dockerfile
+    container_name: products-service
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URL=postgresql://postgres:postgres@products-db:5432/products_db
+      - AZURE_SERVICE_BUS_CONNECTION_STRING=${AZURE_SERVICE_BUS_CONNECTION_STRING}
+    ports:
+      - "3001:3001"
+    depends_on:
+      - products-db
+    volumes:
+      - ./products-service:/app
+      - /app/node_modules
+    networks:
+      - microservices-network
+    command: npm run dev
+
+  # Orders Service
+  orders-service:
+    build:
+      context: ./orders-service
+      dockerfile: Dockerfile
+    container_name: orders-service
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - DATABASE_URL=postgresql://postgres:postgres@orders-db:5432/orders_db
+      - AZURE_SERVICE_BUS_CONNECTION_STRING=${AZURE_SERVICE_BUS_CONNECTION_STRING}
+    ports:
+      - "3002:3002"
+    depends_on:
+      - orders-db
+    volumes:
+      - ./orders-service:/app
+      - /app/node_modules
+    networks:
+      - microservices-network
+    command: npm run dev
+
+volumes:
+  products_data:
+  orders_data:
+
+networks:
+  microservices-network:
+    driver: bridge
