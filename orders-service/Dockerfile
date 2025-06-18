@@ -1,21 +1,27 @@
 FROM node:18-alpine
 
+# Install pnpm
+RUN npm install -g pnpm
+
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml* ./
 
 # Install dependencies
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
+# Install cuid2 for ID generation
+RUN pnpm add @paralleldrive/cuid2
+
+# Build TypeScript
+RUN pnpm run build
 
 # Expose port
 EXPOSE 3002
 
 # Start the application
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "start"]

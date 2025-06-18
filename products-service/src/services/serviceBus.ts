@@ -4,14 +4,14 @@ import { handleOrderCreated } from "./messageHandlers";
 export async function setupServiceBus() {
   try {
     // Subscribe to order-created messages
-    const receiver = serviceBusClient.createReceiver("order-created");
+    // const receiver = serviceBusClient.createReceiver("order-created");
 
-    receiver.subscribe({
-      processMessage: handleOrderCreated,
-      processError: async (args) => {
-        console.error("Service Bus error:", args.error);
-      },
-    });
+    // receiver.subscribe({
+    //   processMessage: handleOrderCreated,
+    //   processError: async (args) => {
+    //     console.error("Service Bus error:", args.error);
+    //   },
+    // });
 
     console.log("Service Bus listeners setup complete");
   } catch (error) {

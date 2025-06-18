@@ -4,14 +4,14 @@ import { handleProductUpdated } from "./messageHandlers";
 export async function setupServiceBus() {
   try {
     // Subscribe to product-updated messages
-    const receiver = serviceBusClient.createReceiver("product-updated");
+    // const receiver = serviceBusClient.createReceiver("product-updated");
 
-    receiver.subscribe({
-      processMessage: handleProductUpdated,
-      processError: async (args) => {
-        console.error("Service Bus error:", args.error);
-      },
-    });
+    // receiver.subscribe({
+    //   processMessage: handleProductUpdated,
+    //   processError: async (args) => {
+    //     console.error("Service Bus error:", args.error);
+    //   },
+    // });
 
     console.log("Service Bus listeners setup complete");
   } catch (error) {
